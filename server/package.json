@@ -20,7 +20,8 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "koa-views": "^6.2.0",
-    "mongoose": "^6.9.1"
+    "mongoose": "^6.9.1",
+    "nodejieba": "^2.6.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"

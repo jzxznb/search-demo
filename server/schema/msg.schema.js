@@ -3,14 +3,14 @@ const { Sql, Schema } = require("../sql");
 const schema = new Schema(
     {
         title: String,
-        keywords: Array,
+        keyword: Array,
         content: String,
     },
     { minimize: false, versionKey: false }
 );
 
 module.exports = {
-    articleModel: Sql({
+    msgModel: Sql({
         schema,
         collectionName: "msg",
     }),

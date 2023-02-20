@@ -1,13 +1,39 @@
 <template>
     <div class="search-area">
-        <a-input-search
-            v-model:value="keyword"
-            placeholder="输入检索关键词"
-            enter-button
-            size="mini"
-            style="width: 800px"
-            allow-clear
-            @search="onSearch" />
+        <a-radio-group v-model:value="searchType">
+            <a-radio :value="1">布尔检索</a-radio>
+            <a-radio :value="0">向量检索</a-radio>
+            <a-radio :value="2">概率检索</a-radio>
+        </a-radio-group>
+        <div>
+            <a-input-search
+                v-if="searchType === 1"
+                v-model:value="keyword"
+                placeholder="输入检索式(且:&,或|,非!,优先级())"
+                enter-button
+                size="mini"
+                style="width: 800px"
+                allow-clear
+                @search="searchByBoolean" />
+            <a-input-search
+                v-if="searchType === 0"
+                v-model:value="keyword"
+                placeholder="输入检索关键词"
+                enter-button
+                size="mini"
+                style="width: 800px"
+                allow-clear
+                @search="searchByVector" />
+            <a-input-search
+                v-if="searchType === 2"
+                v-model:value="keyword"
+                placeholder="输入检索关键词"
+                enter-button
+                size="mini"
+                style="width: 800px"
+                allow-clear
+                @search="searchByProbability" />
+        </div>
     </div>
     <div class="input-article">
         <a-button type="link" @click="visible = true"> 添加检索内容</a-button>
@@ -64,9 +90,22 @@ const formState = reactive({
     keyword: [],
     content: "",
 });
+const searchType = ref(0);
 
-const onSearch = async () => {
-    const res = await axios.post("/api/search", {
+const searchByVector = async () => {
+    const res = await axios.post("/api/searchByVector", {
+        keyword: keyword.value,
+    });
+};
+
+const searchByBoolean = async () => {
+    const res = await axios.post("/api/searchByBoolean", {
+        keyword: keyword.value,
+    });
+};
+
+const searchByProbability = async () => {
+    const res = await axios.post("/api/searchByProbability", {
         keyword: keyword.value,
     });
 };
@@ -74,8 +113,9 @@ const onSearch = async () => {
 const addContent = async () => {
     try {
         await instance.refs.form.validate();
-        console.log(instance.refs.form);
-        console.log(formState);
+        const res = await axios.post("/api/insert", {
+            ...formState,
+        });
     } catch (error) {
         console.log(error);
     }
